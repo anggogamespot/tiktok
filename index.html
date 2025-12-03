@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TikTok Video Downloader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="TikTok Video Downloader UI (Front-End) dengan Tailwind CSS">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  </style>
+</head>
+<body class="bg-white text-slate-900">
+  <header class="relative">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-sky-500"></div>
+    <div class="absolute inset-0 -z-10 opacity-20"
+         style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <nav class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-2 text-white">
+        <div class="h-7 w-7 rounded-md bg-white/15 grid place-items-center">
+          <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2h4v20h-4zM3 9h4v6H3zM17 6h4v12h-4z"/></svg>
+        </div>
+        <span class="font-semibold tracking-wide">TikTok Downloader</span>
+      </div>
+      <a href="#" class="text-white/90 hover:text-white text-sm">Bantuan</a>
+    </nav>
+
+    <section class="max-w-3xl mx-auto px-4 pt-10 pb-16 text-center">
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+        Unduh Video TikTok Cepat & Mudah
+      </h1>
+      <p class="mt-3 sm:mt-4 text-white/90 text-sm sm:text-base">
+        Tempel tautan video TikTok, lalu pilih unduh dengan atau tanpa watermark.
+      </p>
+
+      <div class="mt-8">
+        <div class="bg-white/95 backdrop-blur rounded-2xl shadow-xl p-4 sm:p-6">
+          <div class="relative">
+            <input id="inputUrl" type="text" inputmode="url" placeholder="Tempel tautan video TikTok di sini"
+                   class="w-full rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 px-4 py-3 pr-24 text-sm sm:text-base placeholder-slate-400 transition">
+            <button id="btnPaste"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-[0.98] text-sm font-medium transition">
+              Paste
+            </button>
+          </div>
+          <p id="inputHelp" class="mt-2 text-left text-xs text-slate-500 hidden"></p>
+
+          <div class="mt-4 sm:mt-6 flex items-center justify-center">
+            <button id="btnDownload"
+                    class="inline-flex items-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 active:scale-[0.99] transition">
+              <span id="btnDownloadSpinner" class="hidden h-4 w-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin"></span>
+              <span id="btnDownloadText">Download</span>
+            </button>
+          </div>
+
+          <p class="mt-3 text-xs text-slate-500">
+            Hanya simulasi UI front-end. Tidak ada proses server.
+          </p>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 -mt-10 pb-24">
+    <section id="resultSection" class="hidden">
+      <div class="rounded-2xl border border-slate-200 shadow-xl bg-white p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row gap-5 sm:gap-6">
+          <div class="w-full sm:w-64">
+            <div class="relative aspect-video overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 border border-slate-200">
+              <div class="absolute inset-0 grid place-items-center">
+                <svg class="h-12 w-12 text-blue-600/80" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <h2 id="resultTitle" class="text-lg sm:text-xl font-semibold text-slate-900">
+              Judul Video TikTok (contoh)
+            </h2>
+            <p id="resultMeta" class="mt-1 text-sm text-slate-500">Durasi ~15 detik • @creator</p>
+
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a id="btnNoWm" href="#" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-[0.99] transition">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l4 8H8l4-8zm0 20l4-8H8l4 8z"/></svg>
+                Download Tanpa Watermark
+              </a>
+              <a id="btnWm" href="#" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 text-slate-800 font-semibold hover:bg-slate-200 active:scale-[0.99] transition">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M5 4h14v2H5zm0 6h14v2H5zm0 6h14v2H5z"/></svg>
+                Download Dengan Watermark
+              </a>
+            </div>
+
+            <div id="downloadHint" class="mt-3 text-xs text-slate-500">
+              Tombol di atas adalah simulasi. File tidak sungguhan.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-center text-sm text-slate-500">
+      Dibuat dengan Tailwind CSS • Front-End simulasi • Siap untuk GitHub Pages
+    </div>
+  </footer>
+
+  <script>
+    const inputUrl = document.getElementById('inputUrl');
+    const inputHelp = document.getElementById('inputHelp');
+    const btnPaste = document.getElementById('btnPaste');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnDownloadSpinner = document.getElementById('btnDownloadSpinner');
+    const btnDownloadText = document.getElementById('btnDownloadText');
+    const resultSection = document.getElementById('resultSection');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMeta = document.getElementById('resultMeta');
+    const btnNoWm = document.getElementById('btnNoWm');
+    const btnWm = document.getElementById('btnWm');
+
+    function validateUrl(u) {
+      if (!u) return false;
+      const s = u.trim();
+      if (!s) return false;
+      return s.includes('tiktok.com');
+    }
+
+    async function pasteFromClipboard() {
+      inputHelp.classList.add('hidden');
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          inputUrl.value = text.trim();
+          inputUrl.focus();
+          inputHelp.textContent = 'Tautan ditempel dari clipboard.';
+          inputHelp.classList.remove('hidden');
+        } else {
+          inputHelp.textContent = 'Clipboard kosong.';
+          inputHelp.classList.remove('hidden');
+        }
+      } catch (e) {
+        inputHelp.textContent = 'Tidak dapat mengakses clipboard. Pastikan izin sudah diberikan.';
+        inputHelp.classList.remove('hidden');
+      }
+    }
+
+    function setLoading(state) {
+      if (state) {
+        btnDownload.disabled = true;
+        btnDownloadSpinner.classList.remove('hidden');
+        btnDownloadText.textContent = 'Memproses...';
+      } else {
+        btnDownload.disabled = false;
+        btnDownloadSpinner.classList.add('hidden');
+        btnDownloadText.textContent = 'Download';
+      }
+    }
+
+    function showError(message) {
+      inputUrl.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-200');
+      inputHelp.textContent = message;
+      inputHelp.classList.remove('hidden');
+    }
+
+    function clearError() {
+      inputUrl.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-200');
+      inputHelp.classList.add('hidden');
+    }
+
+    btnPaste.addEventListener('click', pasteFromClipboard);
+
+    btnDownload.addEventListener('click', () => {
+      clearError();
+      const url = inputUrl.value.trim();
+      if (!validateUrl(url)) {
+        showError('Masukkan tautan video TikTok yang valid (mengandung "tiktok.com").');
+        return;
+      }
+      setLoading(true);
+      resultSection.classList.add('hidden');
+      setTimeout(() => {
+        setLoading(false);
+        const title = 'Judul Video TikTok (dummy)';
+        const creator = '@creator';
+        resultTitle.textContent = title;
+        resultMeta.textContent = 'Durasi ~15 detik • ' + creator;
+        resultSection.classList.remove('hidden');
+        window.scrollTo({ top: resultSection.offsetTop - 20, behavior: 'smooth' });
+      }, 1500);
+    });
+
+    function simulateDownload(kind) {
+      const blob = new Blob(
+        [kind === 'no-wm' ? 'Simulasi: file tanpa watermark.' : 'Simulasi: file dengan watermark.'],
+        { type: 'text/plain' }
+      );
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = kind === 'no-wm' ? 'tiktok-no-watermark.txt' : 'tiktok-with-watermark.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    btnNoWm.addEventListener('click', (e) => {
+      e.preventDefault();
+      simulateDownload('no-wm');
+    });
+    btnWm.addEventListener('click', (e) => {
+      e.preventDefault();
+      simulateDownload('wm');
+    });
+  </script>
+</body>
+</html>
